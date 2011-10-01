@@ -1,0 +1,264 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<project xmlns="http://maven.apache.org/POM/4.0.0" xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance"
+         xsi:schemaLocation="http://maven.apache.org/POM/4.0.0 http://maven.apache.org/xsd/maven-4.0.0.xsd">
+    <modelVersion>4.0.0</modelVersion>
+
+    <groupId>net.huangp</groupId>
+    <artifactId>generic-parent</artifactId>
+    <version>1.0-SNAPSHOT</version>
+    <packaging>pom</packaging>
+
+    <name>generic-parent</name>
+    <url>http://maven.apache.org</url>
+
+    <distributionManagement>
+        <repository>
+            <!--defined in maven settings file under server-->
+            <id>nexus-releases</id>
+            <name>nexus release repository</name>
+            <url>http://127.0.0.1:8081/nexus/content/repositories/releases</url>
+        </repository>
+        <snapshotRepository>
+            <!--defined in maven settings file under server-->
+            <id>nexus-snapshots</id>
+            <name>nexus snapshot repository</name>
+            <url>http://127.0.0.1:8081/nexus/content/repositories/snapshots</url>
+        </snapshotRepository>
+    </distributionManagement>
+
+    <properties>
+        <project.build.sourceEncoding>UTF-8</project.build.sourceEncoding>
+
+        <java.source.version>1.6</java.source.version>
+        <java.target.version>${java.source.version}</java.target.version>
+
+        <!--plugins version-->
+        <maven-checkstyle-plugin.version>2.6</maven-checkstyle-plugin.version>
+        <maven-compiler-plugin.version>2.3.2</maven-compiler-plugin.version>
+        <maven-resources-plugin.version>2.4.3</maven-resources-plugin.version>
+        <maven-source-plugin.version>2.1.2</maven-source-plugin.version>
+        <maven-surefire-plugin.version>2.7.2</maven-surefire-plugin.version>
+
+        <!--reporting plugin version-->
+        <cobertura-maven-plugin.version>2.4</cobertura-maven-plugin.version>
+        <findbugs-maven-plugin.version>2.3.1</findbugs-maven-plugin.version>
+        <javancss-maven-plugin.version>2.0</javancss-maven-plugin.version>
+        <maven-javadoc-plugin.version>2.7</maven-javadoc-plugin.version>
+        <maven-jxr-plugin.version>2.1</maven-jxr-plugin.version>
+        <maven-pmd-plugin.version>2.5</maven-pmd-plugin.version>
+        <maven-surefire-report-plugin.version>2.5</maven-surefire-report-plugin.version>
+        <pmd.target.jdk>${java.target.version}</pmd.target.jdk>
+        <taglist-maven-plugin.version>2.3</taglist-maven-plugin.version>
+
+        <!--integration test-->
+        <integration.test.package>itest</integration.test.package>
+        <integration.test.suffix>IntegrationTest.java</integration.test.suffix>
+
+        <!--checkstyle-->
+        <checkstyle.config.location>checkstyle.xml</checkstyle.config.location>
+        <checkstyle.suppressions.location>checkstyle-suppressions.xml</checkstyle.suppressions.location>
+        <checkstyle.skip>false</checkstyle.skip>
+        <checkstyle.consoleOutput>true</checkstyle.consoleOutput>
+        <checkstyle.cacheFile>${project.build.directory}/checkstyle.cache</checkstyle.cacheFile>
+        <checkstyle.failOnViolation>true</checkstyle.failOnViolation>
+        <checkstyle.failsOnError>false</checkstyle.failsOnError>
+        <checkstyle.includes>**/*.java</checkstyle.includes>
+        <checkstyle.excludes>override.me</checkstyle.excludes>
+    </properties>
+
+    <reporting>
+        <plugins>
+            <plugin>
+                <artifactId>maven-jxr-plugin</artifactId>
+                <version>${maven-jxr-plugin.version}</version>
+                <inherited>true</inherited>
+            </plugin>
+            <plugin>
+                <artifactId>maven-pmd-plugin</artifactId>
+                <version>${maven-pmd-plugin.version}</version>
+                <inherited>true</inherited>
+                <configuration>
+                    <targetJdk>${pmd.target.jdk}</targetJdk>
+                </configuration>
+            </plugin>
+            <plugin>
+                <artifactId>maven-surefire-report-plugin</artifactId>
+                <version>${maven-surefire-report-plugin.version}</version>
+                <inherited>true</inherited>
+            </plugin>
+            <plugin>
+                <artifactId>maven-javadoc-plugin</artifactId>
+                <version>${maven-javadoc-plugin.version}</version>
+                <inherited>true</inherited>
+            </plugin>
+            <plugin>
+                <artifactId>maven-checkstyle-plugin</artifactId>
+                <version>${maven-checkstyle-plugin.version}</version>
+                <inherited>true</inherited>
+                <configuration>
+                    <enableRulesSummary>false</enableRulesSummary>
+                    <configLocation>${checkstyle.config.location}</configLocation>
+                    <!--<headerLocation>${checkstyle.header.location}</headerLocation>-->
+                    <suppressionsLocation>${checkstyle.suppressions.location}</suppressionsLocation>
+                </configuration>
+            </plugin>
+            <plugin>
+                <groupId>org.codehaus.mojo</groupId>
+                <artifactId>taglist-maven-plugin</artifactId>
+                <version>${taglist-maven-plugin.version}</version>
+                <inherited>true</inherited>
+            </plugin>
+            <plugin>
+                <groupId>org.codehaus.mojo</groupId>
+                <artifactId>cobertura-maven-plugin</artifactId>
+                <version>${cobertura-maven-plugin.version}</version>
+                <inherited>true</inherited>
+                <configuration>
+                    <formats>
+                        <format>html</format>
+                        <format>xml</format>
+                    </formats>
+                </configuration>
+            </plugin>
+            <plugin>
+                <groupId>org.codehaus.mojo</groupId>
+                <artifactId>findbugs-maven-plugin</artifactId>
+                <version>${findbugs-maven-plugin.version}</version>
+                <inherited>true</inherited>
+                <configuration>
+                    <xmlOutput>true</xmlOutput>
+                    <xmlOutputDirectory>${basedir}/target/site</xmlOutputDirectory>
+                </configuration>
+            </plugin>
+            <plugin>
+                <groupId>org.codehaus.mojo</groupId>
+                <artifactId>javancss-maven-plugin</artifactId>
+                <version>${javancss-maven-plugin.version}</version>
+                <inherited>true</inherited>
+            </plugin>
+        </plugins>
+    </reporting>
+
+    <build>
+        <pluginManagement>
+            <plugins>
+                <plugin>
+                    <artifactId>maven-compiler-plugin</artifactId>
+                    <version>${maven-compiler-plugin.version}</version>
+                    <inherited>true</inherited>
+                    <configuration>
+                        <source>${java.source.version}</source>
+                        <target>${java.target.version}</target>
+                    </configuration>
+                </plugin>
+            </plugins>
+        </pluginManagement>
+        <extensions>
+            <extension>
+                <groupId>net.huangp</groupId>
+                <artifactId>build-tool</artifactId>
+                <version>1.0</version>
+            </extension>
+        </extensions>
+        <plugins>
+
+            <plugin>
+                <artifactId>maven-checkstyle-plugin</artifactId>
+                <version>${maven-checkstyle-plugin.version}</version>
+                <inherited>true</inherited>
+                <executions>
+                    <execution>
+                        <phase>verify</phase>
+                        <goals>
+                            <goal>check</goal>
+                        </goals>
+                    </execution>
+                </executions>
+                <configuration>
+                    <configLocation>${checkstyle.config.location}</configLocation>
+                    <skip>${checkstyle.skip}</skip>
+                    <cacheFile>${checkstyle.cacheFile}</cacheFile>
+                    <consoleOutput>${checkstyle.consoleOutput}</consoleOutput>
+                    <failOnViolation>${checkstyle.failOnViolation}</failOnViolation>
+                    <failsOnError>${checkstyle.failsOnError}</failsOnError>
+                    <includes>${checkstyle.includes}</includes>
+                    <excludes>${checkstyle.excludes}</excludes>
+                </configuration>
+            </plugin>
+
+            <plugin>
+                <artifactId>maven-resources-plugin</artifactId>
+                <version>${maven-resources-plugin.version}</version>
+                <inherited>true</inherited>
+                <!--
+                    TODO Bug in version 2.4.x where delimiters are not interpolated when an '@' char is in the file being processed.
+                    Remove when fixed. See http://jira.codehaus.org/browse/MRESOURCES-104
+
+                    In the meantime, do not use the @foo.bar@ syntax, use ${foo.bar}.
+                -->
+                <configuration>
+                    <delimiters>
+                        <delimiter>${*}</delimiter>
+                    </delimiters>
+                    <useDefaultDelimiters>false</useDefaultDelimiters>
+                </configuration>
+            </plugin>
+
+            <plugin>
+                <artifactId>maven-surefire-plugin</artifactId>
+                <version>${maven-surefire-plugin.version}</version>
+                <inherited>true</inherited>
+                <configuration>
+                    <excludes>
+                        <exclude>**/${integration.test.package}/**</exclude>
+                        <exclude>**/*${integration.test.suffix}</exclude>
+                    </excludes>
+                </configuration>
+                <executions>
+                    <execution>
+                        <id>unit-test</id>
+                        <goals>
+                            <goal>test</goal>
+                        </goals>
+                        <phase>test</phase>
+                        <configuration>
+                            <includes>
+                                <include>**/*UnitTest.java</include>
+                            </includes>
+                        </configuration>
+                    </execution>
+                    <execution>
+                        <id>integration-test</id>
+                        <goals>
+                            <goal>test</goal>
+                        </goals>
+                        <phase>integration-test</phase>
+                        <configuration>
+                            <includes>
+                                <include>**/${integration.test.package}/**/*Test.java</include>
+                                <include>**/${integration.test.package}/**/*TestCase.java</include>
+                                <include>**/*${integration.test.suffix}</include>
+                            </includes>
+                        </configuration>
+                    </execution>
+                </executions>
+            </plugin>
+
+            <plugin>
+                <groupId>org.apache.maven.plugins</groupId>
+                <artifactId>maven-source-plugin</artifactId>
+                <version>${maven-source-plugin.version}</version>
+                <inherited>true</inherited>
+                <executions>
+                    <execution>
+                        <id>attach-sources</id>
+                        <phase>verify</phase>
+                        <goals>
+                            <goal>jar-no-fork</goal>
+                        </goals>
+                    </execution>
+                </executions>
+            </plugin>
+        </plugins>
+    </build>
+</project>
