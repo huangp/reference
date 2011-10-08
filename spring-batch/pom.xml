@@ -14,10 +14,12 @@
 
         <!--versions-->
         <cglib.version>2.1_3</cglib.version>
-        <spring.version>3.0.5.RELEASE</spring.version>
         <slf4j.version>1.6.1</slf4j.version>
         <log4j.version>1.2.16</log4j.version>
+        <!--<spring.version>3.0.5.RELEASE</spring.version>-->
+        <spring.version>3.1.0.M2</spring.version>
         <spring.batch.version>2.1.8.RELEASE</spring.batch.version>
+        <spring.data.version>1.0.0.M4</spring.data.version>
         <hamcrest.version>1.2.1</hamcrest.version>
         <junit.version>4.10</junit.version>
         <hsqldb.version>1.8.0.10</hsqldb.version>
@@ -70,6 +72,12 @@
             <groupId>cglib</groupId>
             <artifactId>cglib-nodep</artifactId>
             <version>${cglib.version}</version>
+        </dependency>
+
+        <dependency>
+            <groupId>org.springframework.data</groupId>
+            <artifactId>spring-data-mongodb</artifactId>
+            <version>${spring.data.version}</version>
         </dependency>
 
         <!--<dependency>-->

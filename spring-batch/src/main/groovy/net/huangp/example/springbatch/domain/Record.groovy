@@ -10,4 +10,9 @@ class Record implements Comparable<Record> {
     int compareTo(Record other) {
         timestamp.compareTo(other.timestamp)
     }
+
+    @Override
+    String toString() {
+        "$messageType : $number at $timestamp [$content]"
+    }
 }
