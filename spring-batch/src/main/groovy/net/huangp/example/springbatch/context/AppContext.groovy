@@ -8,11 +8,8 @@ import org.springframework.batch.core.launch.support.SimpleJobLauncher
 import org.springframework.batch.core.repository.JobRepository
 import org.springframework.batch.core.repository.support.MapJobRepositoryFactoryBean
 import org.springframework.batch.item.file.FlatFileItemReader
-import org.springframework.batch.item.file.FlatFileItemWriter
 import org.springframework.batch.item.file.mapping.BeanWrapperFieldSetMapper
 import org.springframework.batch.item.file.mapping.DefaultLineMapper
-import org.springframework.batch.item.file.transform.BeanWrapperFieldExtractor
-import org.springframework.batch.item.file.transform.DelimitedLineAggregator
 import org.springframework.batch.item.file.transform.DelimitedLineTokenizer
 import org.springframework.batch.support.transaction.ResourcelessTransactionManager
 import org.springframework.beans.factory.annotation.Autowired
@@ -22,43 +19,34 @@ import org.springframework.context.annotation.Bean
 import org.springframework.context.annotation.ComponentScan
 import org.springframework.context.annotation.Configuration
 import org.springframework.context.annotation.ImportResource
-import org.springframework.core.io.FileSystemResource
+import org.springframework.context.annotation.PropertySource
+import org.springframework.core.env.Environment
 import org.springframework.core.io.Resource
 import org.springframework.data.mongodb.core.MongoFactoryBean
 import org.springframework.data.mongodb.core.MongoTemplate
 import org.springframework.transaction.PlatformTransactionManager
 
 @Configuration
-@ImportResource(['classpath:/spring/property-context.xml', 'classpath:/spring/job.xml'])
+@ImportResource('classpath:/spring/job.xml')
 @ComponentScan("net.huangp.example.springbatch.component")
+@PropertySource("classpath:app.properties")
 class AppContext {
-    @Value('#{properties["output"]}')
-    String output
+    //this is from @PropertySource above
+    @Autowired Environment env
 
-    @Value('#{properties["input.fields"]}')
-    String[] inputFields
+    //PropertySource included properties can be used this way and take advantage of spring's type resolver power
+    @Value('${input}') Resource input
 
-    @Value('#{properties["input.included"]}')
-    int[] inputIncludedFields
+    @Value('${error.output}') Resource error
 
-    @Value('#{properties["output.fields"]}')
-    String[] outputFields
-
-    @Value("#{properties[input]}")
-    Resource input
-
-    @Autowired
-    RecordWriter recordWriter
-
-    @Bean(name = "outputResource")
-    Resource outputResource() {
-        new FileSystemResource(output)
-    }
+    @Autowired RecordWriter recordWriter
 
     @Bean(name = "smsFileReader")
     FlatFileItemReader<Record> reader() {
+        String[] inputFields = env.getProperty('input.fields', String[].class)
+        int[] includedFields = env.getProperty('input.included', int[].class)
         //default use comma as delimiter
-        def tokenizer = new DelimitedLineTokenizer(names: inputFields, includedFields: inputIncludedFields)
+        def tokenizer = new DelimitedLineTokenizer(names: inputFields, includedFields: includedFields)
         def mapper = new BeanWrapperFieldSetMapper<Record>(targetType: Record, customEditors: customEditors())
         def lineMapper = new DefaultLineMapper<Record>(lineTokenizer: tokenizer, fieldSetMapper: mapper)
 
@@ -72,14 +60,14 @@ class AppContext {
         customEditors
     }
 
-    @Bean(name = "writer")
-    FlatFileItemWriter<Record> writer() {
-        def fieldExtractor = new BeanWrapperFieldExtractor<Record>(names: outputFields)
-        //default use comma as delimiter
-        def lineAggregator = new DelimitedLineAggregator<Record>(fieldExtractor: fieldExtractor)
-
-        new FlatFileItemWriter<Record>(resource: outputResource(), lineAggregator: lineAggregator)
-    }
+//    @Bean(name = "writer")
+//    FlatFileItemWriter<Record> writer() {
+//        def fieldExtractor = new BeanWrapperFieldExtractor<Record>(names: outputFields)
+//        //default use comma as delimiter
+//        def lineAggregator = new DelimitedLineAggregator<Record>(fieldExtractor: fieldExtractor)
+//
+//        new FlatFileItemWriter<Record>(resource: error, lineAggregator: lineAggregator)
+//    }
 
     @Bean
     MongoTemplate mongoTemplate() {

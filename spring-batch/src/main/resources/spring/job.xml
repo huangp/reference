@@ -1,15 +1,25 @@
 <?xml version="1.0" encoding="UTF-8"?>
-<beans xmlns="http://www.springframework.org/schema/beans"
-       xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance" xmlns:batch="http://www.springframework.org/schema/batch"
-       xsi:schemaLocation="http://www.springframework.org/schema/beans
-       http://www.springframework.org/schema/beans/spring-beans.xsd http://www.springframework.org/schema/batch http://www.springframework.org/schema/batch/spring-batch.xsd">
-    <batch:job id="sampleJob">
-         <batch:step id="singleStep">
-             <batch:tasklet>
-                 <batch:chunk commit-interval="100" reader="smsFileReader" writer="recordWriter">
-                 </batch:chunk>
-             </batch:tasklet>
-         </batch:step>
-    </batch:job>
+<bean:beans xmlns:bean="http://www.springframework.org/schema/beans"
+       xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance"
+       xmlns="http://www.springframework.org/schema/batch"
+       xsi:schemaLocation="
+       http://www.springframework.org/schema/beans http://www.springframework.org/schema/beans/spring-beans.xsd
+       http://www.springframework.org/schema/batch http://www.springframework.org/schema/batch/spring-batch.xsd">
 
-</beans>
+    <job id="sampleJob">
+         <step id="singleStep">
+             <tasklet>
+                 <chunk commit-interval="100" reader="smsFileReader" writer="recordWriter" skip-limit="10000">
+                     <skippable-exception-classes>
+                         <include class="org.springframework.batch.item.file.FlatFileParseException" />
+                     </skippable-exception-classes>
+                 </chunk>
+
+                 <listeners>
+                     <listener ref="skippedRecordListener" />
+                 </listeners>
+             </tasklet>
+         </step>
+    </job>
+
+</bean:beans>
