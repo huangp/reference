@@ -34,7 +34,7 @@ class AppContext {
     //this is from @PropertySource above
     @Autowired Environment env
 
-    //PropertySource included properties can be used this way and take advantage of spring's type resolver power
+    //PropertySource included properties can be used this way and take advantage of spring's type resolving power
     @Value('${input}') Resource input
 
     @Value('${error.output}') Resource error
@@ -59,15 +59,6 @@ class AppContext {
         customEditors.put(Date, new CustomDateEditor(format, true))
         customEditors
     }
-
-//    @Bean(name = "writer")
-//    FlatFileItemWriter<Record> writer() {
-//        def fieldExtractor = new BeanWrapperFieldExtractor<Record>(names: outputFields)
-//        //default use comma as delimiter
-//        def lineAggregator = new DelimitedLineAggregator<Record>(fieldExtractor: fieldExtractor)
-//
-//        new FlatFileItemWriter<Record>(resource: error, lineAggregator: lineAggregator)
-//    }
 
     @Bean
     MongoTemplate mongoTemplate() {
